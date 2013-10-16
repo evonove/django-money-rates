@@ -29,7 +29,7 @@ class BaseRateBackend(object):
         Creates or updates rates for a source
         """
         source = RateSource.objects.get_or_create(name=self.get_source_name())
-        source.base_currency = self.base_currency
+        source.base_currency = self.get_base_currency()
         source.save()
 
         for currency, value in six.iteritems(self.get_rates()):
@@ -39,7 +39,13 @@ class BaseRateBackend(object):
 
     def get_rates(self):
         """
-        Should return a dictionary that maps currency code with its rate value
+        Return a dictionary that maps currency code with its rate value
+        """
+        raise NotImplementedError
+
+    def get_base_currency(self):
+        """
+        Return the base currency to which the rates are referred
         """
         raise NotImplementedError
 
@@ -61,8 +67,7 @@ class OpenExchangeBackend(BaseRateBackend):
                                      money_rates_settings.OPENEXCHANGE_APP_ID)
 
         # Change the base currency whether it is specified in settings
-        if money_rates_settings.OPENEXCHANGE_BASE_CURRENCY:
-            base_url += "&base=%s" % money_rates_settings.OPENEXCHANGE_BASE_CURRENCY
+        base_url += "&base=%s" % self.get_base_currency()
 
         self.url = base_url
 
@@ -75,3 +80,6 @@ class OpenExchangeBackend(BaseRateBackend):
         except Exception as e:
             logger.exception("Error retrieving data from %s", self.url)
             raise RateBackendError("Error retrieving rates: %s" % e)
+
+    def get_base_currency(self):
+        return money_rates_settings.OPENEXCHANGE_BASE_CURRENCY
