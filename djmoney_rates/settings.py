@@ -26,7 +26,7 @@ DEFAULTS = {
 
     'OPENEXCHANGE_URL': 'http://openexchangerates.org/api/latest.json',
     'OPENEXCHANGE_APP_ID': '',
-    'OPENEXCHANGE_BASE_CURRENCY': '',
+    'OPENEXCHANGE_BASE_CURRENCY': 'USD',
 }
 
 # List of settings that cannot be empty
@@ -104,9 +104,5 @@ class MoneyRatesSettings(object):
     def validate_setting(self, attr, val):
         if not val and attr in self.mandatory:
             raise AttributeError("django-money-rates setting: '%s' is mandatory" % attr)
-
-        validator_func = getattr(self, "validate_%s" % attr.lower())
-        if validator_func:
-            validator_func(val)
 
 money_rates_settings = MoneyRatesSettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS, MANDATORY)
