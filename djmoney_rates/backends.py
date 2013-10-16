@@ -41,6 +41,7 @@ class RateBackend(object):
         """
         Should return a dictionary that maps currency code with its rate value
         """
+        raise NotImplementedError
 
 
 class OpenExchangeBackend(RateBackend):
