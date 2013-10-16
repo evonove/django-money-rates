@@ -15,7 +15,7 @@ from .settings import money_rates_settings
 logger = logging.getLogger(__name__)
 
 
-class RateBackend(object):
+class BaseRateBackend(object):
     source_name = None
 
     def get_source_name(self):
@@ -44,7 +44,7 @@ class RateBackend(object):
         raise NotImplementedError
 
 
-class OpenExchangeBackend(RateBackend):
+class OpenExchangeBackend(BaseRateBackend):
     source_name = "openexchange.org"
 
     def __init__(self):
