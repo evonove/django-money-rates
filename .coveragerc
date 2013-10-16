@@ -1,0 +1,3 @@
+[run]
+source = djmoney_rates
+omit = */migrations/*
