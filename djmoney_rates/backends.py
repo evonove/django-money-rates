@@ -17,12 +17,33 @@ logger = logging.getLogger(__name__)
 
 class BaseRateBackend(object):
     source_name = None
+    base_currency = None
 
     def get_source_name(self):
+        """
+        Return the name that identifies the ratings source
+        """
         if not self.source_name:
-            raise RateBackendError("'source_name' should not be empty")
+            raise RateBackendError("'source_name' can't be empty or"
+                                   "you should override 'get_source_name'")
 
         return self.source_name
+
+    def get_base_currency(self):
+        """
+        Return the base currency to which the rates are referred
+        """
+        if not self.base_currency:
+            raise RateBackendError("'base_currency' can't be empty or"
+                                   "you should override 'get_base_currency'")
+
+        return self.base_currency
+
+    def get_rates(self):
+        """
+        Return a dictionary that maps currency code with its rate value
+        """
+        raise NotImplementedError
 
     def update_rates(self):
         """
@@ -36,18 +57,6 @@ class BaseRateBackend(object):
             rate = Rate.objects.get_or_create(source=source, currency=currency)
             rate.value = value
             rate.save()
-
-    def get_rates(self):
-        """
-        Return a dictionary that maps currency code with its rate value
-        """
-        raise NotImplementedError
-
-    def get_base_currency(self):
-        """
-        Return the base currency to which the rates are referred
-        """
-        raise NotImplementedError
 
 
 class OpenExchangeBackend(BaseRateBackend):
