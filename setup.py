@@ -32,7 +32,7 @@ setup(
     author_email='synasius@gmail.com',
     url='https://github.com/evonove/django-money-rates',
     packages=[
-        'djmoney_rastes',
+        'djmoney_rates',
     ],
     include_package_data=True,
     install_requires=[
