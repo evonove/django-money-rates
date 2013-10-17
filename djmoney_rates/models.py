@@ -26,4 +26,4 @@ class Rate(models.Model):
         unique_together = ('source', 'currency')
 
     def __str__(self):
-        return _("%s at %.6f") % (self.currency, self.rate)
+        return _("%s at %.6f") % (self.currency, self.value)
