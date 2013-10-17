@@ -12,9 +12,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if args:
             try:
-                backend_class = import_from_string(args, "")
+                backend_class = import_from_string(args[0], "")
             except ImportError:
-                raise CommandError("Cannot find custom backend %s. Is it correct" % args)
+                raise CommandError("Cannot find custom backend %s. Is it correct" % args[0])
         else:
             backend_class = money_rates_settings.DEFAULT_BACKEND
 
