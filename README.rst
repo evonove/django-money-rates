@@ -8,6 +8,10 @@ django-money-rates
 .. image:: https://travis-ci.org/evonove/django-money-rates.png?branch=master
         :target: https://travis-ci.org/evonove/django-money-rates
 
+
+.. image:: https://coveralls.io/repos/evonove/django-money-rates/badge.png
+  :target: https://coveralls.io/r/evonove/django-money-rates
+
 .. image:: https://pypip.in/d/django-money-rates/badge.png
         :target: https://crate.io/packages/django-money-rates?version=latest
 
