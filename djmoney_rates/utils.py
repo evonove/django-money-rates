@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
 from .exceptions import CurrencyConversionException
 from .models import Rate, RateSource
 from .settings import money_rates_settings
@@ -29,7 +31,7 @@ def convert_money(amount, currency_from, currency_to):
                     currency_from, source.name))
     else:
         # If currency from is the same as base currency its rate is 1
-        rate_from = 1
+        rate_from = Decimal(1)
 
     # get rate for currency_to
     try:
