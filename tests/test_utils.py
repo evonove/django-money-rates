@@ -59,5 +59,5 @@ class TestMoneyConverter(unittest.TestCase):
         Rate.objects.create(source=source, currency="PLN", value=3.07)
         Rate.objects.create(source=source, currency="EUR", value=0.74)
 
-        amount = convert_money(10, "PLN", "EUR").quantize(Decimal("1.00"))
+        amount = convert_money(10.0, "PLN", "EUR").quantize(Decimal("1.00"))
         self.assertEqual(amount, Decimal("2.41"))

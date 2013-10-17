@@ -42,4 +42,7 @@ def convert_money(amount, currency_from, currency_to):
             "Please run python manage.py update_rates" % (
                 currency_to, source.name))
 
+    if isinstance(amount, float):
+        amount = Decimal(amount).quantize(rate_from)
+
     return (amount / rate_from) * rate_to
