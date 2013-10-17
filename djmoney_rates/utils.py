@@ -12,7 +12,7 @@ def convert_money(amount, currency_from, currency_to):
     backend = money_rates_settings.DEFAULT_BACKEND()
 
     try:
-        source = RateSource.objects.get(source_name=backend.get_source_name())
+        source = RateSource.objects.get(name=backend.get_source_name())
     except RateSource.DoesNotExist:
         raise CurrencyConversionException(
             "Rate for %s source do not exists. "
@@ -40,4 +40,4 @@ def convert_money(amount, currency_from, currency_to):
             "Please run python manage.py update_rates" % (
                 currency_to, source.name))
 
-    return (amount / rate_from) * rate_to
+    return (amount / rate_from.value) * rate_to.value
