@@ -46,7 +46,15 @@ class TestMoneyConverter(unittest.TestCase):
 
         self.assertIn("Rate for EUR in fake-backend do not exists", str(cm.exception))
 
-    def test_conversion_is_working(self):
+    def test_conversion_works_from_base_currency(self):
+        source = RateSource.objects.create(name="fake-backend", base_currency="USD")
+        Rate.objects.create(source=source, currency="USD", value=1)
+        Rate.objects.create(source=source, currency="EUR", value=0.74)
+
+        amount = convert_money(1, "USD", "EUR").quantize(Decimal("1.00"))
+        self.assertEqual(amount, Decimal("0.74"))
+
+    def test_conversion_is_working_from_other_currency(self):
         source = RateSource.objects.create(name="fake-backend", base_currency="USD")
         Rate.objects.create(source=source, currency="PLN", value=3.07)
         Rate.objects.create(source=source, currency="EUR", value=0.74)

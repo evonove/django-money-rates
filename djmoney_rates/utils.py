@@ -21,7 +21,7 @@ def convert_money(amount, currency_from, currency_to):
     # get rate for currency_from
     if source.base_currency != currency_from:
         try:
-            rate_from = Rate.objects.get(source=source, currency=currency_from)
+            rate_from = Rate.objects.get(source=source, currency=currency_from).value
         except Rate.DoesNotExist:
             raise CurrencyConversionException(
                 "Rate for %s in %s do not exists. "
@@ -33,11 +33,11 @@ def convert_money(amount, currency_from, currency_to):
 
     # get rate for currency_to
     try:
-        rate_to = Rate.objects.get(source=source, currency=currency_to)
+        rate_to = Rate.objects.get(source=source, currency=currency_to).value
     except Rate.DoesNotExist:
         raise CurrencyConversionException(
             "Rate for %s in %s do not exists. "
             "Please run python manage.py update_rates" % (
                 currency_to, source.name))
 
-    return (amount / rate_from.value) * rate_to.value
+    return (amount / rate_from) * rate_to
