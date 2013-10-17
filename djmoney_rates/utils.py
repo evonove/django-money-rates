@@ -43,6 +43,6 @@ def convert_money(amount, currency_from, currency_to):
                 currency_to, source.name))
 
     if isinstance(amount, float):
-        amount = Decimal(amount).quantize(rate_from)
+        amount = Decimal(amount).quantize(Decimal('.000001'))
 
     return (amount / rate_from) * rate_to
