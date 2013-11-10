@@ -32,9 +32,56 @@ Install django-money-rates::
 
 Then use it in a project::
 
-	import djmoney_rates
+    import djmoney_rates
+
+In order to save exchange rates to your database, add `djmoney_rates` to your INSTALLED_APPS in your project's settings::
+
+    INSTALLED_APPS = (
+        ...
+        'djmoney_rates',
+        ...
+    )
+
+Setup the Open Exchange Rates backend
+-------------------------------------
+
+Open an account at https://openexchangerates.org/ if you don't have one already. Then, add this to your project's settings::
+
+    DJANGO_MONEY_RATES = {
+        'DEFAULT_BACKEND': 'djmoney_rates.backends.OpenExchangeBackend',
+        'OPENEXCHANGE_URL': 'http://openexchangerates.org/api/latest.json',
+        'OPENEXCHANGE_APP_ID': 'YOUR APP ID HERE',
+        'OPENEXCHANGE_BASE_CURRENCY': 'USD',
+    }
+
+For more information on the Open Exchange Rates API, see https://openexchangerates.org/
+
+Pull the latest Exchange Rates
+------------------------------
+
+Once your backend is setup, get the latest exchange rates::
+
+    $ ./manage.py update_rates
+
+Convert from one currency to another
+------------------------------------
+
+Here's an example of converting 10 Euros to Brazilian Reais:
+
+    from moneyed import Money
+    from djmoney_rates.utils import convert_money
+
+    brl_amount = convert_money(10, "EUR", "BRL")
+    brl_money = Money(brl_amount, "BRL")
 
 Features
 --------
 
+* Convert money from one currency to another with an easy to use API.
 * TODO
+
+TODO List
+---------
+
+* Add money converter wrapper for util's `convert_money` function.
+* Add celery periodic task for getting daily exchange rates.
