@@ -51,7 +51,8 @@ def base_convert_money(amount, currency_from, currency_to):
     if isinstance(amount, float):
         amount = Decimal(amount).quantize(Decimal('.000001'))
 
-    return (amount / rate_from) * rate_to
+    # After finishing the operation, quantize down final amount to two points.
+    return ((amount / rate_from) * rate_to).quantize(Decimal("1.00"))
 
 
 def convert_money(amount, currency_from, currency_to):
