@@ -23,13 +23,13 @@ class TestMoneyConverter(unittest.TestCase):
         RateSource.objects.all().delete()
         Rate.objects.all().delete()
 
-    def test_conversion_fail_when_source_do_not_exists(self):
+    def test_conversion_fail_when_source_does_not_exist(self):
         with self.assertRaises(CurrencyConversionException) as cm:
             convert_money(10.0, "PLN", "EUR")
 
         self.assertIn("Rate for fake-backend source do not exists", str(cm.exception))
 
-    def test_conversion_fail_when_currency_from_do_not_exists(self):
+    def test_conversion_fail_when_currency_from_does_not_exist(self):
         RateSource.objects.create(name="fake-backend")
 
         with self.assertRaises(CurrencyConversionException) as cm:
@@ -37,7 +37,7 @@ class TestMoneyConverter(unittest.TestCase):
 
         self.assertIn("Rate for PLN in fake-backend do not exists", str(cm.exception))
 
-    def test_conversion_fail_when_currency_to_do_not_exists(self):
+    def test_conversion_fail_when_currency_to_does_not_exist(self):
         source = RateSource.objects.create(name="fake-backend")
         Rate.objects.create(source=source, currency="PLN", value=0.99999)
 
