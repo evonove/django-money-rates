@@ -77,7 +77,6 @@ Features
 --------
 
 * Convert money from one currency to another with an easy to use API.
-* TODO
 
 TODO List
 ---------
