@@ -4,6 +4,7 @@ History
 -------
 
 0.3.0 (2013-12-30)
+++++++++++++++++++
 
 * `convert_money` utility function now returns moneyed.Money instances
 

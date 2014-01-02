@@ -68,10 +68,11 @@ Convert from one currency to another
 
 Here's an example of converting 10 Euros to Brazilian Reais:
 
+.. code-block:: python
+
     from moneyed import Money
     from djmoney_rates.utils import convert_money
-    brl_amount = convert_money(10, "EUR", "BRL")
-    brl_money = Money(brl_amount, "BRL")
+    brl_money = convert_money(10, "EUR", "BRL")
 
 Features
 --------
