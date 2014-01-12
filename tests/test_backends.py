@@ -37,12 +37,12 @@ class TestRateBackends(BaseTest):
 
 
 class TestOpenExchangeBackend(BaseTest):
-    test_data_1 = """{"disclaimer": "Exchange rates provided by [...]",
+    test_data_1 = b"""{"disclaimer": "Exchange rates provided by [...]",
         "license": "Data collected and blended [...]", "timestamp": 1319730758, "base": "USD",
         "rates": {"AED": 3.672626, "AFN": 48.3775, "ALL": 110.223333, "AMD": 409.604993,
         "YER": 215.035559, "ZAR": 8.416205, "ZMK": 4954.411262, "ZWL": 322.355011}}"""
 
-    test_data_2 = """{"disclaimer": "Exchange rates provided by [...]",
+    test_data_2 = b"""{"disclaimer": "Exchange rates provided by [...]",
         "license": "Data collected and blended [...]", "timestamp": 1319730758, "base": "USD",
         "rates": {"AED": 4.672626, "AFN": 48.3775, "ALL": 110.223333, "AMD": 409.604993,
         "YER": 215.035559, "ZAR": 8.416205, "ZMK": 4954.411262, "ZWL": 322.355011}}"""

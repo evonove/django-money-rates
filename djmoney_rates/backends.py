@@ -87,7 +87,7 @@ class OpenExchangeBackend(BaseRateBackend):
     def get_rates(self):
         try:
             logger.debug("Connecting to url %s" % self.url)
-            data = urlopen(self.url).read()
+            data = urlopen(self.url).read().decode("utf-8")
             return json.loads(data)['rates']
 
         except Exception as e:
