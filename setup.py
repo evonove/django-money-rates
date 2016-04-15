@@ -36,6 +36,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
+        "py-moneyed >= 0.6.0",
     ],
     license="BSD",
     zip_safe=False,
