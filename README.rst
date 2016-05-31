@@ -21,7 +21,7 @@ Currency conversion for money
 Documentation
 -------------
 
-The full documentation is at http://django-money-rates.rtfd.org.
+The full documentation is at https://django-money-rates.readthedocs.io/.
 
 Quickstart
 ----------
