@@ -9,6 +9,11 @@ class Command(BaseCommand):
     args = '<backend_path>'
     help = 'Update rates for configured source'
 
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        # Add a positional argument
+        parser.add_argument('args', nargs='*')
+
     def handle(self, *args, **options):
         if args:
             try:
