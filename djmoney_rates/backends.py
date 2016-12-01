@@ -6,7 +6,11 @@ import json
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import six
 
-from .compat import urlopen
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
+
 from .exceptions import RateBackendError
 from .models import RateSource, Rate
 from .settings import money_rates_settings

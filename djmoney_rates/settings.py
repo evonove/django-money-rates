@@ -16,7 +16,12 @@ back to the defaults.
 """
 
 from django.conf import settings
-from django.utils import importlib, six
+
+try:
+    from django.utils import importlib, six
+except ImportError:
+    import importlib
+    import six
 
 
 USER_SETTINGS = getattr(settings, 'DJANGO_MONEY_RATES', None)
@@ -104,5 +109,6 @@ class MoneyRatesSettings(object):
     def validate_setting(self, attr, val):
         if not val and attr in self.mandatory:
             raise AttributeError("django-money-rates setting: '%s' is mandatory" % attr)
+
 
 money_rates_settings = MoneyRatesSettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS, MANDATORY)
