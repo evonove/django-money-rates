@@ -7,6 +7,7 @@ from django.core.management.base import CommandError
 
 from djmoney_rates.backends import BaseRateBackend
 from djmoney_rates.models import Rate, RateSource
+from djmoney_rates.settings import money_rates_settings
 
 
 class CustomBackend(BaseRateBackend):
@@ -24,6 +25,16 @@ class TestCommands(unittest.TestCase):
 
     def test_custom_backend_used_when_specified(self):
         call_command("update_rates", "tests.test_commands.CustomBackend")
+
+        self.assertEqual(1, RateSource.objects.filter(name="custom-backend").count())
+        self.assertEqual(2, Rate.objects.filter(source__name="custom-backend").count())
+
+    def test_default_backend_used_when_not_specified(self):
+        """
+        Test that if no backend is passed as parameter, the default one is used
+        """
+        money_rates_settings.DEFAULT_BACKEND = CustomBackend
+        call_command("update_rates")
 
         self.assertEqual(1, RateSource.objects.filter(name="custom-backend").count())
         self.assertEqual(2, Rate.objects.filter(source__name="custom-backend").count())
