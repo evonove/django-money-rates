@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Update rates for configured source'
 
     def add_arguments(self, parser):
-        parser.add_argument('backend_path')
+        parser.add_argument('backend_path', nargs='?')
 
     def handle(self, *args, **options):
         if 'backend_path' in options and options['backend_path']:
