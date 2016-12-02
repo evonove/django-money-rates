@@ -9,7 +9,6 @@ env:
   - TOXENV=py27-django19
   - TOXENV=py27-django110
   - TOXENV=py27-djangomaster
-  - TOXENV=py32-django18
   - TOXENV=py33-django18
   - TOXENV=py34-django18
   - TOXENV=py34-django19
