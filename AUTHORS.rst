@@ -11,3 +11,5 @@ Contributors
 ------------
 
 * Tim Zenderman <tzenderman@gmail.com>
+* Federico Dolce <psykopear@gmail.com>
+* Adam Chainz <me@adamj.eu>
