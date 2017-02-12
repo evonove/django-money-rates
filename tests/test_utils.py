@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
 
-import unittest
-
 from decimal import Decimal
+
+import pytest
 
 from djmoney_rates.backends import BaseRateBackend
 from djmoney_rates.exceptions import CurrencyConversionException
@@ -12,96 +12,99 @@ from djmoney_rates.utils import base_convert_money, convert_money
 
 import moneyed
 
+@pytest.fixture
+def set_up():
+    class RateBackend(BaseRateBackend):
+        source_name = "fake-backend"
+        base_currency = "USD"
 
-class TestMoneyConverter(unittest.TestCase):
-    def setUp(self):
-        class RateBackend(BaseRateBackend):
-            source_name = "fake-backend"
-            base_currency = "USD"
+    money_rates_settings.DEFAULT_BACKEND = RateBackend
 
-        money_rates_settings.DEFAULT_BACKEND = RateBackend
+@pytest.mark.django_db(transaction=True)
+def test_base_conversion_fail_when_source_does_not_exist(set_up):
+    with pytest.raises(CurrencyConversionException) as cm:
+        base_convert_money(10.0, "PLN", "EUR")
 
-    def tearDown(self):
-        RateSource.objects.all().delete()
-        Rate.objects.all().delete()
+    assert "Rate for fake-backend source do not exists" in str(cm.value)
 
-    def test_base_conversion_fail_when_source_does_not_exist(self):
-        with self.assertRaises(CurrencyConversionException) as cm:
-            base_convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_base_conversion_fail_when_currency_from_does_not_exist(set_up):
+    RateSource.objects.create(name="fake-backend")
 
-        self.assertIn("Rate for fake-backend source do not exists", str(cm.exception))
+    with pytest.raises(CurrencyConversionException) as cm:
+        base_convert_money(10.0, "PLN", "EUR")
 
-    def test_base_conversion_fail_when_currency_from_does_not_exist(self):
-        RateSource.objects.create(name="fake-backend")
+    assert "Rate for PLN in fake-backend do not exists" in str(cm.value)
 
-        with self.assertRaises(CurrencyConversionException) as cm:
-            base_convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_base_conversion_fail_when_currency_to_does_not_exist(set_up):
+    source = RateSource.objects.create(name="fake-backend")
+    Rate.objects.create(source=source, currency="PLN", value=0.99999)
 
-        self.assertIn("Rate for PLN in fake-backend do not exists", str(cm.exception))
+    with pytest.raises(CurrencyConversionException) as cm:
+        base_convert_money(10.0, "PLN", "EUR")
 
-    def test_base_conversion_fail_when_currency_to_does_not_exist(self):
-        source = RateSource.objects.create(name="fake-backend")
-        Rate.objects.create(source=source, currency="PLN", value=0.99999)
+    assert "Rate for EUR in fake-backend do not exists" in str(cm.value)
 
-        with self.assertRaises(CurrencyConversionException) as cm:
-            base_convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_base_conversion_works_from_base_currency(set_up):
+    source = RateSource.objects.create(name="fake-backend", base_currency="USD")
+    Rate.objects.create(source=source, currency="USD", value=1)
+    Rate.objects.create(source=source, currency="EUR", value=0.74)
 
-        self.assertIn("Rate for EUR in fake-backend do not exists", str(cm.exception))
+    amount = base_convert_money(1, "USD", "EUR")
+    assert amount == Decimal("0.74")
 
-    def test_base_conversion_works_from_base_currency(self):
-        source = RateSource.objects.create(name="fake-backend", base_currency="USD")
-        Rate.objects.create(source=source, currency="USD", value=1)
-        Rate.objects.create(source=source, currency="EUR", value=0.74)
+@pytest.mark.django_db(transaction=True)
+def test_base_conversion_is_working_from_other_currency(set_up):
+    source = RateSource.objects.create(name="fake-backend", base_currency="USD")
+    Rate.objects.create(source=source, currency="PLN", value=3.07)
+    Rate.objects.create(source=source, currency="EUR", value=0.74)
 
-        amount = base_convert_money(1, "USD", "EUR")
-        self.assertEqual(amount, Decimal("0.74"))
+    amount = base_convert_money(10.0, "PLN", "EUR")
+    assert amount == Decimal("2.41")
 
-    def test_base_conversion_is_working_from_other_currency(self):
-        source = RateSource.objects.create(name="fake-backend", base_currency="USD")
-        Rate.objects.create(source=source, currency="PLN", value=3.07)
-        Rate.objects.create(source=source, currency="EUR", value=0.74)
+@pytest.mark.django_db(transaction=True)
+def test_conversion_fail_when_source_does_not_exist(set_up):
+    with pytest.raises(CurrencyConversionException) as cm:
+        convert_money(10.0, "PLN", "EUR")
 
-        amount = base_convert_money(10.0, "PLN", "EUR")
-        self.assertEqual(amount, Decimal("2.41"))
+    assert "Rate for fake-backend source do not exists" in str(cm.value)
 
-    def test_conversion_fail_when_source_does_not_exist(self):
-        with self.assertRaises(CurrencyConversionException) as cm:
-            convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_conversion_fail_when_currency_from_does_not_exist(set_up):
+    RateSource.objects.create(name="fake-backend")
 
-        self.assertIn("Rate for fake-backend source do not exists", str(cm.exception))
+    with pytest.raises(CurrencyConversionException) as cm:
+        convert_money(10.0, "PLN", "EUR")
 
-    def test_conversion_fail_when_currency_from_does_not_exist(self):
-        RateSource.objects.create(name="fake-backend")
+    assert "Rate for PLN in fake-backend do not exists" in str(cm.value)
 
-        with self.assertRaises(CurrencyConversionException) as cm:
-            convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_conversion_fail_when_currency_to_does_not_exist(set_up):
+    source = RateSource.objects.create(name="fake-backend")
+    Rate.objects.create(source=source, currency="PLN", value=0.99999)
 
-        self.assertIn("Rate for PLN in fake-backend do not exists", str(cm.exception))
+    with pytest.raises(CurrencyConversionException) as cm:
+        convert_money(10.0, "PLN", "EUR")
 
-    def test_conversion_fail_when_currency_to_does_not_exist(self):
-        source = RateSource.objects.create(name="fake-backend")
-        Rate.objects.create(source=source, currency="PLN", value=0.99999)
+    assert "Rate for EUR in fake-backend do not exists" in str(cm.value)
 
-        with self.assertRaises(CurrencyConversionException) as cm:
-            convert_money(10.0, "PLN", "EUR")
+@pytest.mark.django_db(transaction=True)
+def test_conversion_works_from_base_currency(set_up):
+    source = RateSource.objects.create(name="fake-backend", base_currency="USD")
+    Rate.objects.create(source=source, currency="USD", value=1)
+    Rate.objects.create(source=source, currency="EUR", value=0.74)
 
-        self.assertIn("Rate for EUR in fake-backend do not exists", str(cm.exception))
+    amount = convert_money(1, "USD", "EUR")
+    assert type(amount) == moneyed.Money
+    assert amount == moneyed.Money(Decimal("0.74"), "EUR")
 
-    def test_conversion_works_from_base_currency(self):
-        source = RateSource.objects.create(name="fake-backend", base_currency="USD")
-        Rate.objects.create(source=source, currency="USD", value=1)
-        Rate.objects.create(source=source, currency="EUR", value=0.74)
+@pytest.mark.django_db(transaction=True)
+def test_conversion_is_working_from_other_currency(set_up):
+    source = RateSource.objects.create(name="fake-backend", base_currency="USD")
+    Rate.objects.create(source=source, currency="PLN", value=3.07)
+    Rate.objects.create(source=source, currency="EUR", value=0.74)
 
-        amount = convert_money(1, "USD", "EUR")
-        self.assertEqual(type(amount), moneyed.Money)
-        self.assertEqual(amount, moneyed.Money(Decimal("0.74"), "EUR"))
-
-    def test_conversion_is_working_from_other_currency(self):
-        source = RateSource.objects.create(name="fake-backend", base_currency="USD")
-        Rate.objects.create(source=source, currency="PLN", value=3.07)
-        Rate.objects.create(source=source, currency="EUR", value=0.74)
-
-        amount = convert_money(10.0, "PLN", "EUR")
-        self.assertEqual(amount, moneyed.Money(Decimal("2.41"), "EUR"))
-
-    
+    amount = convert_money(10.0, "PLN", "EUR")
+    assert amount == moneyed.Money(Decimal("2.41"), "EUR")
