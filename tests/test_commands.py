@@ -18,8 +18,10 @@ class CustomBackend(BaseRateBackend):
 
 
 def test_fail_when_custom_backend_do_not_exists():
-    with pytest.raises(CommandError):
+    with pytest.raises(CommandError) as exc:
         call_command("update_rates", "fake.custom.Backend")
+
+    assert "Cannot find custom backend fake.custom.Backend. Is it correct" in str(exc.value)
 
 @pytest.mark.django_db(transaction=True)
 def test_custom_backend_used_when_specified():

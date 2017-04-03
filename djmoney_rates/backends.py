@@ -28,7 +28,7 @@ class BaseRateBackend(object):
         Return the name that identifies the ratings source
         """
         if not self.source_name:
-            raise RateBackendError("'source_name' can't be empty or"
+            raise RateBackendError("'source_name' can't be empty or "
                                    "you should override 'get_source_name'")
 
         return self.source_name
@@ -38,7 +38,7 @@ class BaseRateBackend(object):
         Return the base currency to which the rates are referred
         """
         if not self.base_currency:
-            raise RateBackendError("'base_currency' can't be empty or"
+            raise RateBackendError("'base_currency' can't be empty or "
                                    "you should override 'get_base_currency'")
 
         return self.base_currency

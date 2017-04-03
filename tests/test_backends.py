@@ -31,8 +31,16 @@ def set_up():
     money_rates_settings.OPENEXCHANGE_APP_ID = "fake-app-id"
 
 def test_source_name_empty_is_invalid():
-    with pytest.raises(RateBackendError):
+    with pytest.raises(RateBackendError) as exc:
         BaseRateBackend().get_source_name()
+
+    assert "'source_name' can't be empty or you should override 'get_source_name'" in str(exc.value)
+
+def test_base_currency_empty_is_invalid():
+    with pytest.raises(RateBackendError) as exc:
+        BaseRateBackend().get_base_currency()
+
+    assert "'base_currency' can't be empty or you should override 'get_base_currency'" in str(exc.value)
 
 @pytest.mark.django_db(transaction=True)
 def test_update_rates():
@@ -51,14 +59,18 @@ def test_update_rates():
 def test_missing_url_error(set_up):
     money_rates_settings.OPENEXCHANGE_URL = ""
 
-    with pytest.raises(ImproperlyConfigured):
+    with pytest.raises(ImproperlyConfigured) as exc:
         OpenExchangeBackend()
+
+    assert "OPENEXCHANGE_URL setting should not be empty when using OpenExchangeBackend" in str(exc.value)
 
 def test_missing_app_id(set_up):
     money_rates_settings.OPENEXCHANGE_APP_ID = ""
 
-    with pytest.raises(ImproperlyConfigured):
+    with pytest.raises(ImproperlyConfigured) as exc:
         OpenExchangeBackend()
+
+    assert "OPENEXCHANGE_APP_ID setting should not be empty when using OpenExchangeBackend" in str(exc.value)
 
 def test_url_is_correct(set_up):
     backend = OpenExchangeBackend()
