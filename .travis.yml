@@ -1,29 +1,39 @@
-language: python
-python:
-  - "3.5"
+# Because Python 3.6 is available on GCE
+dist: trusty
 
-sudo: false
+language: python
+cache: pip
+
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
 
 env:
-  - TOXENV=py27-django18
-  - TOXENV=py27-django19
-  - TOXENV=py27-django110
-  - TOXENV=py33-django18
-  - TOXENV=py34-django18
-  - TOXENV=py34-django19
-  - TOXENV=py34-django110
-  - TOXENV=py34-djangomaster
-  - TOXENV=py35-django18
-  - TOXENV=py35-django19
-  - TOXENV=py35-django110
-  - TOXENV=py35-djangomaster
+  - DJANGO="1.9"
+  - DJANGO="1.10"
+  - DJANGO="1.11"
+  - LINT="yes"
 
 matrix:
   fast_finish: true
+  exclude:
+  - python: "3.4"
+    env: LINT="yes"
+  - python: "3.5"
+    env: LINT="yes"
+  - python: "3.6"
+    env: LINT="yes"
+  - python: "3.6"
+    env: DJANGO="1.8"
+  - python: "3.6"
+    env: DJANGO="1.9"
+  - python: "3.6"
+    env: DJANGO="1.10"
 
 install:
-  - pip install tox "virtualenv<14"
-  - pip install coveralls
+  - pip install tox>=2.1 tox-travis coveralls
 
 script:
   - tox
