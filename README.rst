@@ -26,15 +26,21 @@ The full documentation is at https://django-money-rates.readthedocs.io/.
 Quickstart
 ----------
 
-Install django-money-rates::
+Install django-money-rates:
+
+.. code-block:: bash
 
     pip install django-money-rates
 
-Then use it in a project::
+Then use it in a project:
+
+.. code-block:: python
 
     import djmoney_rates
 
-In order to save exchange rates to your database, add `djmoney_rates` to your INSTALLED_APPS in your project's settings::
+In order to save exchange rates to your database, add `djmoney_rates` to your INSTALLED_APPS in your project's settings:
+
+.. code-block:: python
 
     INSTALLED_APPS = (
         ...
@@ -45,7 +51,9 @@ In order to save exchange rates to your database, add `djmoney_rates` to your IN
 Setup the Open Exchange Rates backend
 -------------------------------------
 
-Open an account at https://openexchangerates.org/ if you don't have one already. Then, add this to your project's settings::
+Open an account at https://openexchangerates.org/ if you don't have one already. Then, add this to your project's settings:
+
+.. code-block:: python
 
     DJANGO_MONEY_RATES = {
         'DEFAULT_BACKEND': 'djmoney_rates.backends.OpenExchangeBackend',
@@ -59,7 +67,9 @@ For more information on the Open Exchange Rates API, see https://openexchangerat
 Pull the latest Exchange Rates
 ------------------------------
 
-Once your backend is setup, get the latest exchange rates::
+Once your backend is setup, get the latest exchange rates:
+
+.. code-block:: bash
 
     $ ./manage.py update_rates
 
