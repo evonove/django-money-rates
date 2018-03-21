@@ -36,11 +36,15 @@ setup(
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Framework :: Django",
         "Framework :: Django :: 1.8",
         "Framework :: Django :: 1.9",
         "Framework :: Django :: 1.10",
+        "Framework :: Django :: 1.11",
+        "Framework :: Django :: 2.0",
     ],
     keywords='django-money-rates',
     author='Federico Frenguelli',
@@ -51,7 +55,7 @@ setup(
     include_package_data=True,
     test_suite='runtests',
     install_requires=[
-        'py-moneyed==0.6.0'
+        'py-moneyed==0.7.0'
     ],
     zip_safe=False,
 )

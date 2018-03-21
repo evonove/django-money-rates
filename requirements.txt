@@ -1,2 +1,2 @@
-py-moneyed==0.6.0
+py-moneyed==0.7.0
 # Additional requirements go here
