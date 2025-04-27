@@ -1,11 +1,9 @@
-from __future__ import unicode_literals
-
 from decimal import Decimal
 import pytest
 
 from django.core.exceptions import ImproperlyConfigured
 
-from mock import patch
+from unittest.mock import patch
 
 from djmoney_rates.backends import BaseRateBackend, RateBackendError, OpenExchangeBackend
 from djmoney_rates.models import Rate, RateSource

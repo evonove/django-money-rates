@@ -1,8 +1,7 @@
-py-moneyed==0.6.0
 mock>=1.0.1
-pytest-mock==1.2
-pytest==2.9.2
-pytest-django==3.1.2
-
+pytest-mock
+pytest
+pytest-django
+pytest-cov
 
 # Additional test requirements go here

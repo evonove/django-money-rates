@@ -6,10 +6,10 @@ class RateInline(admin.TabularInline):
     model = Rate
 
 
+@admin.register(RateSource)
 class RateSourceAdmin(admin.ModelAdmin):
     inlines = [
         RateInline,
     ]
 
 
-admin.site.register(RateSource, RateSourceAdmin)

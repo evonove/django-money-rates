@@ -1,15 +1,8 @@
-from __future__ import unicode_literals
-
+from urllib.request import urlopen
 import logging
 import json
 
 from django.core.exceptions import ImproperlyConfigured
-from django.utils import six
-
-try:
-    from urllib2 import urlopen
-except ImportError:
-    from urllib.request import urlopen
 
 from .exceptions import RateBackendError
 from .models import RateSource, Rate
@@ -19,7 +12,7 @@ from .settings import money_rates_settings
 logger = logging.getLogger(__name__)
 
 
-class BaseRateBackend(object):
+class BaseRateBackend:
     source_name = None
     base_currency = None
 
@@ -57,7 +50,7 @@ class BaseRateBackend(object):
         source.base_currency = self.get_base_currency()
         source.save()
 
-        for currency, value in six.iteritems(self.get_rates()):
+        for currency, value in self.get_rates().items():
             try:
                 rate = Rate.objects.get(source=source, currency=currency)
             except Rate.DoesNotExist:
@@ -80,23 +73,22 @@ class OpenExchangeBackend(BaseRateBackend):
                 "OPENEXCHANGE_APP_ID setting should not be empty when using OpenExchangeBackend")
 
         # Build the base api url
-        base_url = "%s?app_id=%s" % (money_rates_settings.OPENEXCHANGE_URL,
-                                     money_rates_settings.OPENEXCHANGE_APP_ID)
+        base_url = f"{money_rates_settings.OPENEXCHANGE_URL}?app_id={money_rates_settings.OPENEXCHANGE_APP_ID}"
 
         # Change the base currency whether it is specified in settings
-        base_url += "&base=%s" % self.get_base_currency()
+        base_url += f"&base={self.get_base_currency()}"
 
         self.url = base_url
 
     def get_rates(self):
         try:
-            logger.debug("Connecting to url %s" % self.url)
+            logger.debug(f"Connecting to url {self.url}")
             data = urlopen(self.url).read().decode("utf-8")
             return json.loads(data)['rates']
 
         except Exception as e:
             logger.exception("Error retrieving data from %s", self.url)
-            raise RateBackendError("Error retrieving rates: %s" % e)
+            raise RateBackendError(f"Error retrieving rates: {e}")
 
     def get_base_currency(self):
         return money_rates_settings.OPENEXCHANGE_BASE_CURRENCY

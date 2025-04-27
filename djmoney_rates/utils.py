@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from decimal import Decimal
 
 from .exceptions import CurrencyConversionException
@@ -16,9 +14,8 @@ def get_rate(currency):
         return Rate.objects.get(source=source, currency=currency).value
     except Rate.DoesNotExist:
         raise CurrencyConversionException(
-            "Rate for %s in %s do not exists. "
-            "Please run python manage.py update_rates" % (
-                currency, source.name))
+            f"Rate for {currency} in {source.name} do not exists. "
+            "Please run python manage.py update_rates")
 
 
 def get_rate_source():
@@ -28,8 +25,8 @@ def get_rate_source():
         return RateSource.objects.get(name=backend.get_source_name())
     except RateSource.DoesNotExist:
         raise CurrencyConversionException(
-            "Rate for %s source do not exists. "
-            "Please run python manage.py update_rates" % backend.get_source_name())
+            f"Rate for {backend.get_source_name()} source do not exists. "
+            "Please run python manage.py update_rates")
 
 
 def base_convert_money(amount, currency_from, currency_to):

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.core.management.base import BaseCommand, CommandError
 
 from ...settings import money_rates_settings, import_from_string
@@ -16,7 +14,7 @@ class Command(BaseCommand):
             try:
                 backend_class = import_from_string(options['backend_path'], "")
             except ImportError:
-                raise CommandError("Cannot find custom backend %s. Is it correct" % options['backend_path'])
+                raise CommandError("Cannot find custom backend {}. Is it correct".format(options['backend_path']))
         else:
             backend_class = money_rates_settings.DEFAULT_BACKEND
 
@@ -24,6 +22,6 @@ class Command(BaseCommand):
             backend = backend_class()
             backend.update_rates()
         except Exception as e:
-            raise CommandError("Error during rate update: %s" % e)
+            raise CommandError(f"Error during rate update: {e}")
 
-        self.stdout.write('Successfully updated rates for "%s"' % backend_class)
+        self.stdout.write(f'Successfully updated rates for "{backend_class}"')

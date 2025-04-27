@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 """
 This module is largely inspired by django-rest-framework settings.
 
@@ -16,12 +14,7 @@ back to the defaults.
 """
 
 from django.conf import settings
-
-try:
-    from django.utils import importlib, six
-except ImportError:
-    import importlib
-    import six
+import importlib
 
 
 USER_SETTINGS = getattr(settings, 'DJANGO_MONEY_RATES', None)
@@ -50,7 +43,7 @@ def perform_import(val, setting_name):
     If the given setting is a string import notation,
     then perform the necessary import or imports.
     """
-    if isinstance(val, six.string_types):
+    if isinstance(val, str):
         return import_from_string(val, setting_name)
     elif isinstance(val, (list, tuple)):
         return [import_from_string(item, setting_name) for item in val]
@@ -67,11 +60,11 @@ def import_from_string(val, setting_name):
         module = importlib.import_module(module_path)
         return getattr(module, class_name)
     except ImportError as e:
-        msg = "Could not import '%s' for setting '%s'. %s: %s." % (val, setting_name, e.__class__.__name__, e)
+        msg = f"Could not import '{val}' for setting '{setting_name}'. {e.__class__.__name__}: {e}."
         raise ImportError(msg)
 
 
-class MoneyRatesSettings(object):
+class MoneyRatesSettings:
     """
     A settings object, that allows Bazaar settings to be accessed as properties.
 
@@ -87,7 +80,7 @@ class MoneyRatesSettings(object):
 
     def __getattr__(self, attr):
         if attr not in self.defaults.keys():
-            raise AttributeError("Invalid django-money-rates setting: '%s'" % attr)
+            raise AttributeError(f"Invalid django-money-rates setting: '{attr}'")
 
         try:
             # Check if present in user settings
@@ -108,7 +101,7 @@ class MoneyRatesSettings(object):
 
     def validate_setting(self, attr, val):
         if not val and attr in self.mandatory:
-            raise AttributeError("django-money-rates setting: '%s' is mandatory" % attr)
+            raise AttributeError(f"django-money-rates setting: '{attr}' is mandatory")
 
 
 money_rates_settings = MoneyRatesSettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS, MANDATORY)

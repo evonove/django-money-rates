@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
 import os
@@ -50,8 +49,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     test_suite='runtests',
-    install_requires=[
-        'py-moneyed==0.6.0'
-    ],
+    install_requires=["py-moneyed>=0.6.0"],
     zip_safe=False,
 )
